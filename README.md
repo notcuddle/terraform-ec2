@@ -450,5 +450,5 @@ terraform apply
 
 Como se puede ver aca se nos creo todos nuestros recursos en AWS.
 Ahora entrariamos al output que configuramos anterior mente para que nos muestre la url de cloudFront y con eso ya podemos entrar a nuestro sitio
-![alt text](image3.png)
+![alt text](./images/image3.png)
 
