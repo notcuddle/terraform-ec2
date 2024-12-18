@@ -2,7 +2,7 @@
 
 Este repositorio tiene como finalidad el poder desplegar una infraestructura en AWS utilizando terraform. Lo que vamos a realizar es crear una instancia EC2 con un servidor nginx que muestre un sitio web estatico. La forma en la cual vamos a acceder va hacer por medio de un CDN en este caso utilizamos CloudFront.
 
-![alt text](image.png)
+![alt text](./images/archt.png)
 
 ## Tabla de Contenidos
 - [Requisitos](#requisitos)
