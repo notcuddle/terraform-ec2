@@ -1,0 +1,1 @@
+variable "ec2_public_dns" {}

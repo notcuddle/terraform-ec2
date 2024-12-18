@@ -11,10 +11,16 @@ module "vpc" {
 
 
 module "web_server" {
-  source           = "./modules/ec2"
-  ami_linux =  var.ami_linux
-  instance_type    = var.instance_type
-  subnet_id        = module.vpc.public_subnets[0]
-  vpc_id           = module.vpc.vpc_id
-  ec2_name         = "Web Server"
+  source        = "./modules/ec2"
+  ami_linux     = var.ami_linux
+  instance_type = var.instance_type
+  subnet_id     = module.vpc.public_subnets[0]
+  vpc_id        = module.vpc.vpc_id
+  ec2_name      = "Web Server"
+}
+
+
+module "cloud_front_ec2" {
+  source         = "./modules/cloudFront"
+  ec2_public_dns = module.web_server.ec2_public_dns
 }

@@ -35,7 +35,7 @@ variable "instance_type" {
 }
 
 variable "ami_linux" {
-  type = string
+  type    = string
   default = "ami-0ff8a91507f77f867"
 }
 

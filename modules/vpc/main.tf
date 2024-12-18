@@ -3,7 +3,7 @@ resource "aws_vpc" "app_vpc" {
   enable_dns_hostnames = var.enable_dns_hostnames
 
   tags = {
-    Name = ""
+    Name = "vpc-ec2-webserver"
   }
 }
 
@@ -11,7 +11,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.app_vpc.id
 
  tags = {
-    Name = ""
+    Name = "igw-ec2-nginx"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name = ""
+    Name = "rout_table_ec2_nginx"
   }
 }
 

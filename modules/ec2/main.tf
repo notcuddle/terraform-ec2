@@ -9,16 +9,16 @@ resource "aws_security_group" "web_sg" {
   }
 
   ingress {
-    from_port   = 80       
-    to_port     = 80
-    protocol    = "tcp"
+    from_port   = 0 
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]  
   }
 
@@ -41,13 +41,6 @@ resource "aws_instance" "web" {
   yum install -y httpd.x86_64
   systemctl start httpd.service
   systemctl enable httpd.service
-  instanceId=$(curl http://169.254.169.254/latest/meta-data/instance-id)
-  instanceAZ=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
-  pubHostName=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
-  pubIPv4=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
-  privHostName=$(curl http://169.254.169.254/latest/meta-data/local-hostname)
-  privIPv4=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-  
   echo "<font face = "Verdana" size = "5">"                               > /var/www/html/index.html
   echo "<center><h1>AWS Linux VM Deployed with Terraform</h1></center>"   >> /var/www/html/index.html
   echo "<center> <b>EC2 Instance Metadata</b> </center>"                  >> /var/www/html/index.html

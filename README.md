@@ -2,6 +2,8 @@
 
 Este repositorio tiene como finalidad el poder desplegar una infraestructura en AWS utilizando terraform. Lo que vamos a realizar es crear una instancia EC2 con un servidor nginx que muestre un sitio web estatico. La forma en la cual vamos a acceder va hacer por medio de un CDN en este caso utilizamos CloudFront.
 
+![alt text](image.png)
+
 ## Tabla de Contenidos
 - [Requisitos](#requisitos)
 - [Creacion archivo principal]()
@@ -359,3 +361,94 @@ terraform init (lo ejeuctamos nuevamente porque acabamos de agregar un nuevo mod
 terraform plan
 ```
 Si nos devuelve nuevamente todos los recursos que va a crear seguimos por buen camino
+
+### Crear CloudFront para la instacia EC2
+
+Ahora debemos crear el recurso de CloudFront para esto vamos a pegar lo siguente en los archivos del Modulo cloudFront
+
+```bash
+resource "aws_cloudfront_distribution" "cf-dist" {
+  enabled             = true
+  default_root_object = "index.html"
+
+  origin {
+    domain_name = var.ec2_public_dns
+    origin_id   = var.ec2_public_dns
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = var.ec2_public_dns
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  price_class = "PriceClass_All"
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+}
+```
+
+variables.tf
+
+```bash
+variable "common_tags" {}
+variable "naming_prefix" {}
+variable "ec2_public_dns" {}
+```
+outputs.tf
+```bash
+output "cloudfront_distribution_arn" {
+  value = aws_cloudfront_distribution.cf-dist.arn
+}
+output "cloudfront_distribution_domain_name" {
+  value = aws_cloudfront_distribution.cf-dist.domain_name
+}
+```
+
+Con esto ya tenemos el recurso de cloudFront creado.
+Vamos a utilizar ese modulo en el archivo principal main.tf
+
+```bash
+module "cloud_front_ec2" {
+  source         = "./modules/cloudFront"
+  ec2_public_dns = module.web_server.ec2_public_dns
+}
+```
+Con esto ya puesto. Podemos proceder a escribir los comandos 
+Terraform init para inicializar el proyecto nuevamente.
+Terraform plan asi vemos todo lo que se nos va a crear
+![alt text](./images/image.png)
+Si nos sale algo parecido por consola ya podemos correr el comando
+"terraform apply" para levantar todos nuestros recursos en AWS
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
+![alt text](./images/images2.png)
+
+Como se puede ver aca se nos creo todos nuestros recursos en AWS.
+Ahora entrariamos al output que configuramos anterior mente para que nos muestre la url de cloudFront y con eso ya podemos entrar a nuestro sitio
+![alt text](image3.png)
+
